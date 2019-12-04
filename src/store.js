@@ -1,20 +1,18 @@
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 
-// function reducer(state = 0, action) {
-//   if (action.type === "INCREMENT") {
-//     return state + 1;
-//   }
+function counterReducer(state = 0, action) {
+  if (action.type === "INCREMENT") {
+    return state + 1;
+  }
 
-//   if (action.type === "DECREMENT") {
-//     return state - 1;
-//   }
+  if (action.type === "DECREMENT") {
+    return state - 1;
+  }
 
-//   state = state + 1;
+  return state;
+}
 
-//   return state;
-// }
-
-function reducer(state = [], action) {
+function todosReducer(state = [], action) {
   switch (action.type) {
     case "CREATE_TODO":
       return state.concat([action.payload]);
@@ -29,7 +27,12 @@ function reducer(state = [], action) {
   }
 }
 
-const store = createStore(reducer);
+const store = createStore(
+  combineReducers({
+    todos: todosReducer,
+    counter: counterReducer
+  })
+);
 
 store.subscribe(() => {
   console.log("State has changed!", store.getState());
@@ -42,5 +45,8 @@ store.dispatch({ type: "CREATE_TODO", payload: "Learn Angular" });
 store.dispatch({ type: "DELETE_TODO", id: 2 });
 
 store.dispatch({ type: "UPDATE_TODO", id: 0, payload: "Learn Node.js" });
+
+store.dispatch({ type: "INCREMENT" });
+store.dispatch({ type: "INCREMENT" });
 
 export default store;
